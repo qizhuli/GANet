@@ -1,0 +1,9 @@
+*.pyc
+*.pth
+*.so
+
+data
+result
+libs/GANet/build/
+libs/sync_bn/build/
+
