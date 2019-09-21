@@ -4,26 +4,12 @@ import skimage
 import skimage.io
 import skimage.transform
 from PIL import Image
-
-# from math import log10
 from tqdm import tqdm
-
-# from GCNet.modules.GCNet import L1Loss
-# import sys
-# import shutil
 import os
 import torch
-
-# import torch.nn as nn
 import torch.nn.parallel
 import torch.distributed as dist
-# import torch.backends.cudnn as cudnn
-# import torch.optim as optim
 from torch.autograd import Variable
-
-# from torch.utils.data import DataLoader
-# from models.GANet_deep import GANet
-# from dataloader.data import get_test_set
 import numpy as np
 import warnings
 warnings.simplefilter("ignore")
