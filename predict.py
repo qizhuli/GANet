@@ -5,6 +5,7 @@ import skimage.io
 import skimage.transform
 from PIL import Image
 from math import log10
+from tqdm import tqdm
 #from GCNet.modules.GCNet import L1Loss
 import sys
 import shutil
@@ -29,6 +30,7 @@ parser.add_argument('--resume', type=str, default='', help="resume from saved mo
 parser.add_argument('--cuda', type=bool, default=True, help='use cuda?')
 parser.add_argument('--kitti', type=int, default=0, help='kitti dataset? Default=False')
 parser.add_argument('--kitti2015', type=int, default=0, help='kitti 2015? Default=False')
+parser.add_argument('--cityscapes', type=int, default=0, help='Cityscapes? Default=False')
 parser.add_argument('--data_path', type=str, required=True, help="data root")
 parser.add_argument('--test_list', type=str, required=True, help="training list")
 parser.add_argument('--save_path', type=str, default='./result/', help="location to save result")
@@ -141,17 +143,22 @@ def test(leftname, rightname, savename):
 if __name__ == "__main__":
     file_path = opt.data_path
     file_list = opt.test_list
-    f = open(file_list, 'r')
-    filelist = f.readlines()
-    for index in range(len(filelist)):
-        current_file = filelist[index]
+    with open(file_list, 'r') as f:
+        filelist = [line.strip() for line in f.readlines()]
+    for current_file in tqdm(filelist):
         if opt.kitti2015:
-            leftname = file_path + 'image_2/' + current_file[0: len(current_file) - 1]
-            rightname = file_path + 'image_3/' + current_file[0: len(current_file) - 1]
+            leftname = os.path.join(file_path, 'image_2', current_file)
+            rightname = os.path.join(file_path, 'image_3', current_file)
+            savename = os.path.join(opt.save_path, current_file)
         if opt.kitti:
-            leftname = file_path + 'colored_0/' + current_file[0: len(current_file) - 1]
-            rightname = file_path + 'colored_1/' + current_file[0: len(current_file) - 1]
+            leftname = os.path.join(file_path, 'colored_0', current_file)
+            rightname = os.path.join(file_path, 'colored_1', current_file)
+            savename = os.path.join(opt.save_path, current_file)
+        if opt.cityscapes:
+            file_id = current_file.split('_leftImg8bit.png')[0]
+            leftname = os.path.join(file_path, 'leftImg8bit', file_id + '_leftImg8bit.png')
+            rightname = os.path.join(file_path, 'rightImg8bit', file_id + '_rightImg8bit.png')
+            savename = os.path.join(opt.save_path, os.path.basename(file_id) + '_Disp16bit.png')
 
-        savename = opt.save_path + current_file[0: len(current_file) - 1]
         test(leftname, rightname, savename)
 
